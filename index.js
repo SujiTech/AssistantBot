@@ -52,7 +52,7 @@ bot.on('/pop', ({text, from, chat}) => {
 
   if (data.files[stash] && data.files[stash].length) {
     let msgs = data.files[stash].map((msg) => bot.forwardMessage(id, msg.chat.id, msg.message_id, {notify : true}))
-    return Promise.seq(msgs.join([Promise.timeout(500), bot.sendMessage(id, `你要的${stash}，以上。`)]))
+    return Promise.seq(msgs.join([Promise.timeout(1000), bot.sendMessage(id, `你要的${stash}，以上。`)]))
   } else {
     return bot.sendMessage(id, '归档空。')
   }
