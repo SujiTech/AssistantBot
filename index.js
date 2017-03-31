@@ -1,5 +1,7 @@
 import Telebot from 'telebot'
 import Moment from 'moment-timezone'
+import axios from 'axios'
+import cheerio from 'cheerio'
 Moment.locale('zh-cn')
 import fs from 'fs'
 
@@ -34,6 +36,26 @@ bot.on('/time', ({text, from, chat}) => {
       timezoneNames = Object.keys(timezones),
       msg = (name) => `${name} : ${time.tz(timezones[name]).format('lll')}`
   return bot.sendMessage(id, timezoneNames.map(msg).join('\n'))
+})
+
+bot.on('/poll', ({text, from, chat}) => {
+  let { id } = chat
+  return axios.get('https://askwhale.com/p/0c7435/elevator-pitch-contest')
+  .then(function (response) {
+    let $ = cheerio.load(response.data)
+    let data = JSON.parse($('div[data-react-class="V.PodPage"]').attr('data-react-props'))
+    let {questions} = data
+    let res = questions
+      .filter(a => a.likes_count >= 67)
+      .sort((a, b) => {
+        return parseInt(a.likes_count) < parseInt(b.likes_count)
+      })
+      .map(q => `${q.askee.name} got ${q.likes_count}`)
+    return bot.sendMessage(id, res.join('\n'))
+  })
+  .catch(function (error) {
+    console.log(error);
+  })
 })
 
 bot.on('/stash', (msg) => {

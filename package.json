@@ -10,10 +10,12 @@
   "author": "hong",
   "license": "NO",
   "dependencies": {
+    "axios": "^0.15.3",
     "babel-core": "^6.23.1",
     "babel-polyfill": "^6.23.0",
     "babel-preset-latest": "^6.22.0",
     "babel-watch": "^2.0.6",
+    "cheerio": "^0.22.0",
     "moment": "^2.17.1",
     "moment-timezone": "^0.5.11",
     "promise-sequential": "^1.1.1",
