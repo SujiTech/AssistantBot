@@ -38,7 +38,7 @@ bot.on('/time', ({text, from, chat}) => {
   return bot.sendMessage(id, timezoneNames.map(msg).join('\n'))
 })
 
-bot.on('/poll', ({text, from, chat}) => {https://askwhale.com/api/v1/users/yanhan02008/questions_answered.json?limit=1&offset=0
+bot.on('/poll', ({text, from, chat}) => {
   let { id } = chat
   let suji_likes, first_likes, res
   return Promise.all([
