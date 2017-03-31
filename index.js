@@ -67,8 +67,10 @@ bot.on('/poll', ({text, from, chat}) => {https://askwhale.com/api/v1/users/yanha
     res.push(`${first_likes - suji_likes} likes needed`)
 
     let q = personalPage.data.filter(q => q.guid == '4ea5cf')[0]
-    let unlocks = q.calculated_unlocks_count
-    res.push(`${suji_likes}❤️️over ${unlocks}👀 yields conversion rate ${suji_likes / unlocks}`)
+    if (q) {
+      let unlocks = q.calculated_unlocks_count
+      res.push(`${suji_likes}❤️️over ${unlocks}👀 yields conversion rate ${suji_likes / unlocks}`) 
+    }
 
 
     return bot.sendMessage(id, res.join('\n'))
