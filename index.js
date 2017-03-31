@@ -69,6 +69,8 @@ bot.on('/poll', ({text, from, chat}) => {
     res.push(`${diff} likes needed`)
     if (diff > 0)
       res.push(`革命尚未成功，同志仍需努力`)
+    else
+      res.push(`投票数第一了可是革命尚未成功，同志仍需努力`)
 
     let q = personalPage.data.filter(q => q.guid == '4ea5cf')[0]
     if (q) {
