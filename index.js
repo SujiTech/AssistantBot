@@ -29,6 +29,7 @@ bot.on('/time', ({text, from, chat}) => {
       timezones = {
         '日本🇯🇵'  : "Asia/Tokyo",
         '中国🇨🇳'  : "Asia/Shanghai",
+        '湾区🇺🇸' : "America/Los_Angeles",
         'UIUC🇺🇸' : "America/Chicago",
         '德国🇩🇪' : "Europe/Berlin",
       },
@@ -64,7 +65,10 @@ bot.on('/poll', ({text, from, chat}) => {
       })
       .map(q => `${q.askee.name} got ${q.likes_count}`)
     res.push('')
-    res.push(`${first_likes - suji_likes} likes needed`)
+    const diff = first_likes - suji_likes
+    res.push(`${diff} likes needed`)
+    if (diff > 0)
+      res.push(`革命尚未成功，同志仍需努力`)
 
     let q = personalPage.data.filter(q => q.guid == '4ea5cf')[0]
     if (q) {
