@@ -1,4 +1,7 @@
-export default ({text, from, chat}) => {
+import axios from 'axios'
+import cheerio from 'cheerio'
+
+export default (bot) => ({text, from, chat}) => {
   let { id } = chat
   let suji_likes, first_likes, res
   return Promise.all([

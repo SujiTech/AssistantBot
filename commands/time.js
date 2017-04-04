@@ -1,4 +1,7 @@
-export default ({text, from, chat}) => {
+import Moment from 'moment-timezone'
+Moment.locale('zh-cn')
+
+export default (bot) => ({text, from, chat}) => {
   let { id } = chat
   let time = Moment(),
       timezones = {

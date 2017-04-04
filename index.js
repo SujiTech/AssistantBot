@@ -1,8 +1,4 @@
 import Telebot from 'telebot'
-import Moment from 'moment-timezone'
-import axios from 'axios'
-import cheerio from 'cheerio'
-Moment.locale('zh-cn')
 import fs from 'fs'
 
 Promise.seq = require('promise-sequential')
@@ -24,9 +20,9 @@ bot.on('/start', ({text, from}) => {
 })
 
 import Time from './commands/time'
-bot.on('/time', Time)
+bot.on('/time', Time(bot))
 import Poll from './commands/poll'
-bot.on('/poll', Poll)
+bot.on('/poll', Poll(bot))
 
 bot.on('/stash', (msg) => {
   let {text, from, chat} = msg
