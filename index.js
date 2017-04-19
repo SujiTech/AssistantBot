@@ -48,54 +48,50 @@ bot.on('*', (msg) => {
   }
 })
 
-;['mp4', 'pdf', 'docx'].forEach(fileType => {
-  bot.on(`/${fileType}`, (msg) => {
-    let {
-      message_id,
-      from,
-      chat,
-      date,
-      text,
-      reply_to_message,
-      document,
-      audio,
-      video
-    } = msg
-    if (!accessToFile(msg))
-      return bot.sendMessage(chat.id, 'Access Denied.')
-    let firstFile = data.files.filter(f => f.document && f.document.file_name.endsWith(`.${fileType}`))[0]
-    if (firstFile)
-      return bot.forwardMessage(chat.id, firstFile.chat.id, firstFile.message_id)
-    else
-      return bot.sendMessage(chat.id, `I found no .${fileType} file.`)
-  })
-  bot.on(`/${fileType}s`, (msg) => {
-    const maxNumber = 5
-    let {
-      message_id,
-      from,
-      chat,
-      date,
-      text,
-      reply_to_message,
-      document,
-      audio,
-      video
-    } = msg
-    if (!accessToFile(msg))
-      return bot.sendMessage(chat.id, 'Access Denied.')
-    let files = data.files.filter(f => f.document && f.document.file_name.endsWith(`.${fileType}`)).slice(0,maxNumber)
-    console.log(files)
-    if (files)
-      return Promise.all(files.map(f => {
-        return bot.forwardMessage(chat.id, f.chat.id, f.message_id)
-      }).concat([
-        bot.sendMessage(chat.id, `${Math.min(maxNumber, files.length)} file(s) shown (${maxNumber} max)`)
-      ]))
-    else
-      return bot.sendMessage(chat.id, `I found no .${fileType} file.`)
-  })
+const FileLookupFuncGenerator = ({
+  filter, slice, msg
+}) => (msg) => {
+  let {
+    message_id,
+    from,
+    chat,
+    date,
+    text,
+    reply_to_message,
+    document,
+    audio,
+    video
+  } = msg
+  if (!accessToFile(msg))
+    return bot.sendMessage(chat.id, 'Access Denied.')
+  let files = data.files.filter(filter).slice(0, slice)
+  if (files)
+    return Promise.all(files.map(f => {
+      return bot.forwardMessage(chat.id, f.chat.id, f.message_id)
+    }).concat([
+      bot.sendMessage(chat.id, `${Math.min(slice, files.length)} file(s) shown (${slice} max)`)
+    ]))
+  else
+    return bot.sendMessage(chat.id, `I found no matching file.`)
+}
+const FileTypeFilterGenerator = (fileType) => (f) => f.document && f.document.file_name.endsWith(`.${fileType}`)
+
+
+;['mp4', 'pdf', 'docx', 'zip'].forEach(fileType => {
+  bot.on(`/${fileType}`, FileLookupFuncGenerator({
+    filter : FileTypeFilterGenerator(fileType),
+    slice : 1
+  }))
+  bot.on(`/${fileType}s`, FileLookupFuncGenerator({
+    filter : FileTypeFilterGenerator(fileType),
+    slice : 5
+  }))
 })
+
+bot.on('/files', FileLookupFuncGenerator({
+  filter : () => true,
+  slice : 5
+}))
 
 const parenthesisFillFuncGenerator = (left, right) => ({text, from, chat, message_id}) => {
   let llen = text.split(left).length - 1,
