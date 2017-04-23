@@ -7,7 +7,7 @@ export default (bot) => ({text, from, chat}) => {
       timezones = {
         '日本🇯🇵'  : "Asia/Tokyo",
         '中国🇨🇳'  : "Asia/Shanghai",
-        '湾区🇺🇸' : "America/Los_Angeles",
+        '湾区🏳️‍🌈' : "America/Los_Angeles",
         'UIUC🇺🇸' : "America/Chicago",
         '德国🇩🇪' : "Europe/Berlin",
       },
