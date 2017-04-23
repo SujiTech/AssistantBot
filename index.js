@@ -103,6 +103,7 @@ const parenthesisFillFuncGenerator = (left, right) => ({text, from, chat, messag
 bot.on('text', parenthesisFillFuncGenerator('（','）'))
 bot.on('text', parenthesisFillFuncGenerator('(',')'))
 bot.on('text', parenthesisFillFuncGenerator('[',']'))
+bot.on('text', parenthesisFillFuncGenerator('<','>'))
 
 bot.connect()
 
