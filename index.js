@@ -77,7 +77,7 @@ const FileLookupFuncGenerator = ({
 const FileTypeFilterGenerator = (fileType) => (f) => f.document && f.document.file_name.endsWith(`.${fileType}`)
 
 
-;['mp4', 'pdf', 'docx', 'zip'].forEach(fileType => {
+;['mp4', 'pdf', 'docx', 'zip', 'key'].forEach(fileType => {
   bot.on(`/${fileType}`, FileLookupFuncGenerator({
     filter : FileTypeFilterGenerator(fileType),
     slice : 1
