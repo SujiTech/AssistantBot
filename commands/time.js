@@ -8,7 +8,6 @@ export default (bot) => ({text, from, chat}) => {
         '日本🇯🇵'  : "Asia/Tokyo",
         '中国🇨🇳'  : "Asia/Shanghai",
         '湾区🏳️‍🌈' : "America/Los_Angeles",
-        'UIUC🇺🇸' : "America/Chicago",
         '德国🇩🇪' : "Europe/Berlin",
       },
       timeStr = (name) => `${name}`,
