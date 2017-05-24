@@ -16,6 +16,7 @@ const token = '288807406:AAEoxNGZLWnuBCalkcddEI4tJY7Y9-QcDE8',
 let data = JSON.parse(fs.readFileSync('data.json', {encoding : 'utf8'}))
 const userExists = (name) => !!data.users.filter((u) => u.name == name).length
 const getUser = (msg) => data.users.filter(u => u.name == msg.from.username)[0]
+const getUserByName = (name) => data.users.filter(u => u.name == name)[0]
 bot.on('/start', ({text, from}) => {
   let { id } = from
   return bot.sendMessage(id, 'Hi')
@@ -29,6 +30,26 @@ import Time from './commands/time'
 bot.on('/time', Time(bot))
 import Poll from './commands/poll'
 bot.on('/poll', Poll(bot))
+
+const makeUserObject = (name) => ({
+  name,
+  files : [],
+  isAdmin : true,
+})
+
+bot.on('/adduser', ({text, from, chat}) => {
+  const {id} = chat, {username} = from, u = getUserByName(username)
+  if (!(u && u.isAdmin)) {
+    return bot.sendMessage(id, '无权限。');
+  }
+  let [name] = text.split(' ').slice(1)
+  if (userExists(name)) {
+    return bot.sendMessage(id, '已存在。')
+  } else {
+    data.users.push(makeUserObject(name))
+    return bot.sendMessage(id, '已搞完。')
+  }
+})
 
 bot.on('/stash', (msg) => {
   let {text, from, chat} = msg
@@ -76,6 +97,9 @@ bot.on('*', (msg) => {
   }
   if (msg.forward_from) {
     const u = getUser(msg)
+    if (!u) {
+      return bot.sendMessage(msg.from.id, '喵喵？')
+    }
     u.files.push(msg)
     return bot.sendMessage(msg.from.id, '已推入缓冲区')
   }
