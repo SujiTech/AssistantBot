@@ -30,6 +30,34 @@ bot.on('/time', Time(bot))
 import Poll from './commands/poll'
 bot.on('/poll', Poll(bot))
 
+bot.on('/stash', (msg) => {
+  let {text, from, chat} = msg
+  let { id } = chat
+  let stash = text.split(' ').slice(1).join('-')
+  const u = getUser(msg)
+  data.files[stash] = u.files.slice(0)
+  u.files = []
+  return bot.sendMessage(id, `已归档${data.files[stash].length}条至 ${stash}，权限为公开`)
+})
+
+bot.on('/pop', ({text, from, chat}) => {
+  let { id } = chat
+  let stash = text.split(' ').slice(1).join(' ')
+
+  if (data.files[stash] && data.files[stash].length) {
+    let msgs = data.files[stash].map((msg) => bot.forwardMessage(id, msg.chat.id, msg.message_id, {notify : true}))
+    return Promise.seq(msgs.map(p => {
+      return function () {
+        return p
+      }
+    }))
+      .then(Promise.timeout(1000))
+      .then(bot.sendMessage(id, '以上。'))
+  } else {
+    return bot.sendMessage(id, '归档空。')
+  }
+})
+
 bot.on('*', (msg) => {
   let {
     message_id,
@@ -45,6 +73,11 @@ bot.on('*', (msg) => {
   if (document && accessToFile(msg)) {
     data.files.push(msg)
     return bot.sendMessage(chat.id, `File ${document.file_name} saved.`)
+  }
+  if (msg.forward_from) {
+    const u = getUser(msg)
+    u.files.push(msg)
+    return bot.sendMessage(msg.from.id, '已推入缓冲区')
   }
 })
 
